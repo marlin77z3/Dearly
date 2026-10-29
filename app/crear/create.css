@@ -53,7 +53,7 @@
 .page-create .side-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
 .page-create .side-head b { font-size: .8rem; letter-spacing: .16em; text-transform: uppercase; color: #5a4a47; }
 .page-create .side-head span { font-size: .85rem; color: #9a928f; }
-.page-create .letter { position: relative; min-height: 640px; padding: 60px 56px 40px; text-align: center; font-family: var(--serif);
+.page-create .letter { display: flex; flex-direction: column; position: relative; min-height: 640px; padding: 60px 56px 40px; text-align: center; font-family: var(--serif);
   background:
     radial-gradient(circle at 0% 0%, var(--c1) 0%, transparent 45%),
     radial-gradient(circle at 100% 100%, var(--c2) 0%, transparent 42%),
@@ -70,12 +70,12 @@
 .page-create .lplayer .cover { width: 48px; height: 48px; border-radius: 6px; background: linear-gradient(135deg, var(--c1), var(--c2)); }
 .page-create .lplayer strong { display: block; font-size: 1rem; }
 .page-create .lplayer span { font-size: .85rem; color: #ccc; }
-.page-create .lsign { position: absolute; right: 40px; bottom: 36px; text-align: right; font-style: italic; font-size: 1.3rem; line-height: 1.5; color: #6b5b58; }
+.page-create .lsign { margin-top: auto; padding-top: 32px; text-align: right; font-style: italic; font-size: 1.3rem; line-height: 1.5; color: #6b5b58; }
 @media (max-width: 900px) {
 .page-create .layout { grid-template-columns: 1fr; }
 .page-create .side { position: static; order: -1; }
 .page-create .tagline { display: none; }
-.page-create .letter { min-height: 520px; padding: 40px 28px 90px; }
+.page-create .letter { min-height: 520px; padding: 40px 28px 32px; }
 }
 .page-create .letter[data-theme="stars"] { background:
     radial-gradient(ellipse 55% 45% at 50% 0%, color-mix(in srgb, var(--c1) 55%, transparent) 0%, transparent 100%),

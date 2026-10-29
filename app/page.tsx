@@ -50,7 +50,7 @@ export default function Home() {
               <span>♥</span> Desde el 27 de septiembre de 2026
             </p>
 
-            <SongPlayer videoId="LNaHpezFjng" song="Perfecta" artist="Miranda!, Maria Becerra, FMK" />
+            <SongPlayer videoId="LNaHpezFjng" song="Perfecta" artist="Miranda!, Maria Becerra, FMK" playable={false} />
 
             <p className="sign">
               Con cariño,

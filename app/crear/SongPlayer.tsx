@@ -31,9 +31,9 @@ function loadApi(): Promise<any> {
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
-type Props = { videoId: string; song: string; artist: string };
+type Props = { videoId: string; song: string; artist: string; playable?: boolean };
 
-export default function SongPlayer({ videoId, song, artist }: Props) {
+export default function SongPlayer({ videoId, song, artist, playable = true }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const player = useRef<any>(null);
   const [playing, setPlaying] = useState(false);
@@ -44,6 +44,7 @@ export default function SongPlayer({ videoId, song, artist }: Props) {
   const wantPlay = useRef(false);
 
   useEffect(() => {
+    if (!playable) return;
     let cancelled = false;
     const host = document.createElement("div");
     box.current?.append(host);
@@ -78,7 +79,7 @@ export default function SongPlayer({ videoId, song, artist }: Props) {
       player.current = null;
       if (box.current) box.current.innerHTML = "";
     };
-  }, [videoId]);
+  }, [videoId, playable]);
 
   useEffect(() => {
     if (!playing) return;
@@ -110,7 +111,7 @@ export default function SongPlayer({ videoId, song, artist }: Props) {
     setTime(t);
   };
 
-  const pct = duration ? Math.min(100, (time / duration) * 100) : 0;
+  const pct = !playable ? 38 : duration ? Math.min(100, (time / duration) * 100) : 0;
 
   return (
     <div className="lplayer">
@@ -119,17 +120,17 @@ export default function SongPlayer({ videoId, song, artist }: Props) {
       <div className="lp-meta">
         <strong>{song}</strong>
         <span>{failed ? "Este video no permite reproducirse aquí" : artist}</span>
-        <div className="lp-bar" onClick={seek} role="slider" aria-label="Línea de tiempo" aria-valuemin={0} aria-valuemax={Math.round(duration)} aria-valuenow={Math.round(time)}>
+        <div className="lp-bar" onClick={playable ? seek : undefined} role="slider" aria-label="Línea de tiempo" aria-valuemin={0} aria-valuemax={Math.round(duration)} aria-valuenow={Math.round(time)}>
           <div className="lp-track">
             <div className="lp-fill" style={{ width: `${pct}%` }} />
           </div>
         </div>
         <div className="lp-times">
-          <span>{fmt(time)}</span>
-          <span>{duration ? fmt(duration) : "--:--"}</span>
+          <span>{playable ? fmt(time) : "1:22"}</span>
+          <span>{!playable ? "3:36" : duration ? fmt(duration) : "--:--"}</span>
         </div>
       </div>
-      <button type="button" className="lp-play" onClick={toggle} aria-label={playing ? "Pausar" : "Reproducir"}>
+      <button type="button" className="lp-play" onClick={toggle} disabled={!playable} aria-label={playing ? "Pausar" : "Reproducir"}>
         {playing ? (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z" /></svg>
         ) : (

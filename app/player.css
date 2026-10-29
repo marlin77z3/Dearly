@@ -12,3 +12,5 @@
 .lp-play:hover { transform: scale(1.06); }
 .lp-play:active { transform: scale(.96); }
 .lp-hidden { position: fixed; left: -9999px; top: 0; width: 200px; height: 200px; pointer-events: none; }
+.lp-play:disabled { cursor: default; transform: none; }
+.lplayer:has(.lp-play:disabled) .lp-bar { cursor: default; }
