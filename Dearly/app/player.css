@@ -1,0 +1,14 @@
+/* Reproductor de canción, compartido por el inicio y el formulario */
+.lplayer { position: relative; z-index: 2; display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #2a2a2a; color: #fff; border-radius: 16px; text-align: left; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.lp-cover { flex: none; width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: #444; }
+.lp-meta { flex: 1; min-width: 0; }
+.lp-meta strong { display: block; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-meta > span { display: block; font-size: .85rem; color: #ccc; margin: 2px 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-bar { padding: 6px 0; cursor: pointer; }
+.lp-track { height: 4px; background: #555; border-radius: 2px; overflow: hidden; }
+.lp-fill { height: 100%; background: #fff; border-radius: 2px; }
+.lp-times { display: flex; justify-content: space-between; font-size: .7rem; color: #aaa; font-variant-numeric: tabular-nums; }
+.lp-play { position: relative; z-index: 3; flex: none; display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%; background: #fff; color: #111; cursor: pointer; transition: transform .15s; }
+.lp-play:hover { transform: scale(1.06); }
+.lp-play:active { transform: scale(.96); }
+.lp-hidden { position: fixed; left: -9999px; top: 0; width: 200px; height: 200px; pointer-events: none; }
