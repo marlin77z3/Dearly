@@ -113,3 +113,20 @@
 .page-create .lplayer { gap: 14px; text-align: left; position: relative; }
 
 .page-create .lplayer { z-index: 2; }
+
+.page-create .result { margin-top: 28px; padding: 24px; background: #fff; border: 1px solid #e3cfcb; border-radius: 16px; box-shadow: 0 16px 36px -20px rgba(90,60,50,.3); }
+.page-create .result-title { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 6px; }
+.page-create .result .hint { margin: 0 0 14px; }
+.page-create .result-url { font-size: .9rem; color: var(--muted); text-overflow: ellipsis; }
+.page-create .result-actions { display: flex; gap: 12px; margin-top: 14px; }
+.page-create .result-copy, .page-create .result-open { flex: 1; padding: 14px; border-radius: 10px; font: 700 .95rem var(--sans); text-align: center; text-decoration: none; cursor: pointer; }
+.page-create .result-copy { background: var(--rose-dark); color: #fff; border: 0; }
+.page-create .result-copy:hover { background: #664139; }
+.page-create .result-open { background: #fff; color: var(--rose-dark); border: 1px solid #e3cfcb; }
+
+/* Página pública de la carta */
+.page-create.view { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; }
+.page-create .view-card { width: min(100%, 560px); }
+.page-create .view-foot { margin-top: 28px; text-align: center; font-size: .9rem; color: var(--muted); }
+.page-create .view-foot a { color: var(--rose-dark); text-decoration: none; font-weight: 600; }
+.page-create .view-foot a:hover { text-decoration: underline; }

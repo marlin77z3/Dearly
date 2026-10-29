@@ -1,19 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CustomColor from "./CustomColor";
-import SongPlayer from "./SongPlayer";
+import LetterView from "./LetterView";
 import { PRESETS, toggleColor } from "./colors";
 import { getVideoId } from "./youtube";
-
-type Theme = "sunset" | "stars" | "garden";
-
-const THEMES: { id: Theme; name: string; glyph: string; middle: string }[] = [
-  { id: "sunset", name: "Atardecer", glyph: "✳", middle: "♥" },
-  { id: "stars", name: "Estrellado", glyph: "✦", middle: "✧" },
-  { id: "garden", name: "Jardín", glyph: "❋", middle: "✿" },
-];
+import { THEMES, encodeLetter, formatDate, type Theme } from "../letter";
 
 export default function CreateForm() {
   const [colors, setColors] = useState({ chosen: [PRESETS[0], PRESETS[1]], custom: null as string | null });
@@ -25,6 +18,10 @@ export default function CreateForm() {
   const [link, setLink] = useState("");
   const [info, setInfo] = useState<{ id: string; song: string; artist: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [result, setResult] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [formError, setFormError] = useState("");
+  const resultRef = useRef<HTMLDivElement>(null);
   const videoId = getVideoId(link);
 
   useEffect(() => {
@@ -43,7 +40,6 @@ export default function CreateForm() {
   }, [videoId, link]);
 
   const { chosen, custom } = colors;
-  const t = THEMES.find((x) => x.id === theme)!;
 
   const pick = (c: string) => setColors((s) => ({ ...s, chosen: toggleColor(s.chosen, c) }));
 
@@ -55,12 +51,7 @@ export default function CreateForm() {
       return { chosen: toggleColor(s.chosen, hex), custom: hex };
     });
 
-  const dateText = date
-    ? (() => {
-        const [y, m, d] = date.split("-").map(Number);
-        return new Date(y, m - 1, d).toLocaleDateString("es", { day: "numeric", month: "long", year: "numeric" });
-      })()
-    : null;
+  const dateText = formatDate(date);
 
   const vars = { "--c1": chosen[0], "--c2": chosen[1] ?? chosen[0] } as React.CSSProperties;
 
@@ -87,9 +78,22 @@ export default function CreateForm() {
         <form
           className="form"
           autoComplete="off"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            if (!message.trim()) return setFormError("Escribe tu mensaje antes de crear la carta.");
+            setFormError("");
+            const token = await encodeLetter({
+              c: chosen,
+              t: theme,
+              d: date,
+              m: message.trim(),
+              to: to.trim(),
+              from: from.trim(),
+              ...(info ? { y: info.id, s: info.song, a: info.artist } : {}),
+            });
+            setResult(`${window.location.origin}/c/${token}`);
+            setCopied(false);
+            setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
           }}
         >
           <section className="step">
@@ -196,9 +200,37 @@ export default function CreateForm() {
             </p>
           </section>
 
+          {formError && <p className="hint small err">{formError}</p>}
           <button className="submit" type="submit">
             Crear mi carta <span>♡</span>
           </button>
+
+          {result && (
+            <div className="result" ref={resultRef}>
+              <p className="result-title">¡Tu carta está lista! ♥</p>
+              <p className="hint small">Comparte este enlace con esa persona especial.</p>
+              <input className="result-url" readOnly value={result} onFocus={(e) => e.target.select()} aria-label="Enlace de tu carta" />
+              <div className="result-actions">
+                <button
+                  type="button"
+                  className="result-copy"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(result);
+                      setCopied(true);
+                    } catch {
+                      setCopied(false);
+                    }
+                  }}
+                >
+                  {copied ? "¡Copiado!" : "Copiar enlace"}
+                </button>
+                <a className="result-open" href={result} target="_blank" rel="noreferrer">
+                  Ver mi carta ↗
+                </a>
+              </div>
+            </div>
+          )}
         </form>
 
         <aside className="side">
@@ -206,28 +238,7 @@ export default function CreateForm() {
             <b>Una vista previa</b>
             <span>Se transforma contigo</span>
           </div>
-          <article className="letter" data-theme={theme}>
-            <div className="orn">
-              <span>{t.glyph}</span>
-              <i>·</i>
-              <b>{t.middle}</b>
-              <i>·</i>
-              <span>{t.glyph}</span>
-            </div>
-            <p className="lto">{to.trim() ? `Para ${to.trim()}` : "Para alguien especial"}</p>
-            <p className={`lbody${message ? "" : " empty"}`}>{message || "Aquí aparecerán tus palabras bonitas…"}</p>
-            {dateText && (
-              <p className="lsince">
-                <span>♥</span> Desde el {dateText}
-              </p>
-            )}
-            {info && <SongPlayer key={info.id} videoId={info.id} song={info.song} artist={info.artist} />}
-            <p className="lsign">
-              Con cariño,
-              <br />
-              {from.trim() || "Tu nombre"}
-            </p>
-          </article>
+          <LetterView theme={theme} to={to} message={message} dateText={dateText} song={info} from={from} />
         </aside>
       </main>
     </div>
